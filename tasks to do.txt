@@ -1,0 +1,16 @@
+1) Find best cards to throw
+2) Implement a gameplay simulator between 2-3 players,
+    with provision for 1 deck or two decks if required based on the number of players playing
+3) Implement pile class
+4) generate a probability model for all cards based on cards thrown and cards drawn from pile 
+5) Based on 4 and 3, find best cards to throw
+6) Implement case for showing cards when your game is complete
+7) Implement case for submitting cards with lowest sum when another player shows and finishes the game,
+           
+9) check for long break sequence houses for cases like 7.
+    For example: 8S,...,...,11S. Attach two unused wildcards in between.
+10) Evaluate cards that can satisfy your needs, and find the probability of 
+    increasing your number of complete melds and decreasing reward sum based on "probability model discussed in 4"  
+
+8) Attach multiple unused wildcards to 1 card for reducing the total reward sum                             
+                xxxxxxx DONE OK TESTED xxxxxxx 

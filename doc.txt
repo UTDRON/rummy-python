@@ -1,0 +1,209 @@
+1) Root node is the one that represents the list of all cards a player has
+2) Level 1 nodes are the ones that represent the list of all possible pure sequences if available
+    if pure sequences are not available then level 1 nodes represent all the incomplete sequences
+3) level 2 nodes have all the pure sequences if available
+    otherwise all the impure sequences or incomplete sequences
+4) level 3 nodes: all pure sequences if available
+    otherwise all complete sets if available
+    otherwise all impure sequences if available
+    otherwise all impure sets if available
+    otherwise all incomplete sequences if available
+    otherwise all imcomplete sets if available
+    otherwise unformed melds or remaining group of cards
+5) level 4 nodes same as level 3
+
+
+Cases:
+
+1)
+['10♠', '3♥', '13♦', '5♠', '5♥', '14♥', '7♣', '5♣', '10♥', '12♥', '6♣', '2♥', '2♥']
+MY WILDCARDS:  ['7♣']
+[['10♠', '13♦', '2♥'], ['5♥', '5♠'], ['10♥', '12♥'], ['5♣', '6♣', '7♣'], ['14♥', '2♥', '3♥']]
+Reward Sum:  -52
+The reward sum can be around -28 if wildcard in 5,6,7 is used for 10,12 and 5 is used in set
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  OK TESTED DONE (ALSO ON OPTIMIZED TREE EXPANSION) xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+2) A bug:
+
+SORTED CARDS:  [['3♦', '3♦'], ['6♣', '6♣', '10♣', '13♣'], ['3♥', '6♥', '7♥', '8♥', '9♥'], ['6♠', '8♠', '11♠'], []]
+WILDCARD:  8♦
+Possible Pure Sequences: [['6♥', '7♥', '8♥'], ['6♥', '7♥', '8♥', '9♥'], ['7♥', '8♥', '9♥']]
+Possible Incomplete Sequences Houses: [['6♥', '7♥'], ['6♥', '7♥', '9♥'], ['6♥', '8♥'], ['6♥', '8♥', '9♥'], ['7♥', '8♥'], ['7♥', '9♥'], ['8♥', '9♥'], ['6♠', '8♠']]
+Possible Complete Sets: [['6♣', '6♥', '6♠']]
+Possible Incomplete Sets Houses: [['3♦', '3♥'], ['6♣', '6♥'], ['6♣', '6♠'], ['6♥', '6♠'], ['8♥', '8♠']]
+MY WILDCARDS:  ['8♥', '8♠']
+0 : ['6♠', '8♥', '6♣', '11♠', '3♥', '13♣', '7♥', '6♥', '8♠', '9♥', '6♣', '3♦', '10♣', '3♦']
+[['6♣', '11♠', '13♣', '3♦', '10♣'], ['6♣', '6♠'], ['3♦', '3♥', '8♠'], ['6♥', '7♥', '8♥', '9♥']]
+Reward Sum:  -57
+[['6♣', '11♠', '13♣', '3♦', '10♣'], ['3♦', '3♥'], ['6♣', '6♠', '8♠'], ['6♥', '7♥', '8♥', '9♥']]
+Reward Sum:  -57
+***Second meld cant have a wildcard as it is not an incomplete sequence
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  OK TESTED DONE (ALSO ON OPTIMIZED TREE EXPANSION) xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+3) Check These Cases
+# cards = ['3♦','4♦','5♦','14♦','4♣','6♣','7♣','10♣','11♣','9♥','13♥','13♠','14♠']  #56        DONE    36 nodes to 27              Reward_Sum: SAME    time: reduce
+# cards = ['3♦','4♦','5♦','14♦','4♣','6♣','7♣','10♣','14♣','9♥','13♥','13♠','14♠']  #29        DONE    100 nodes to 70/67 nodes       Reward_Sum: SAME    time: reduce
+# cards = ['3♦','4♦','5♦','14♦','4♣','6♣','7♣','10♣','14♣','14♥','13♥','13♠','14♠'] #20        DONE    513 nodes to 249/186 nodes      Reward_Sum: SAME    time: reduce
+# cards = ['3♦','4♦','5♦','14♦','4♣','6♣','7♣','10♣','14♣','14♥','13♥','12♠','13♠','14♠'] #10  DONE    2481 nodes to 873 nodes     Reward_Sum: SAME    time: reduce
+
+# cards = ['4♦','7♦','15*','12♣','13♣','2♥','4♥','6♥','7♥','9♥','3♠','8♠','10♠'] #80    DONE           98 nodes to 47 nodes        Reward_Sum: SAME    time: reduce
+# cards = ['6♦','7♦','15*','3♣','5♣','10♣','10♥','11♥','13♥','2♠','4♠','6♠','10♠'] #53  DONE           192 nodes to 61 nodes       Reward_Sum: SAME    time: reduce
+# wildcard = '10♦'
+
+# cards = ['4♦','5♦','8♦','3♣','4♣','6♣','7♣','12♣','13♣','14♣','3♥','8♥','3♠'] #51  DONE              772 nodes to 305 nodes      Reward_Sum: SAME    time: reduce
+# cards = ['5♣','6♣','7♣','6♥','7♥','8♥','12♥','13♥','14♥','4♠','5♠','7♠','10♠','11♠'] #0  DONE              2329 nodes to 742 nodes     Reward_Sum: SAME    time: reduce
+# wildcard = '10♣'
+
+# cards = ['2♦','3♦','5♦','14♦','2♣','5♣','7♣','9♣','12♣','2♥','2♠','5♠','6♠'] #6      DONE            255 nodes to 137 nodes      Reward_Sum: SAME    time: reduce
+# cards = ['12♦','3♣','6♣','4♥','6♥','3♠','8♠','6♠','9♠','10♠','12♠','13♠','14♠'] #4   DONE            79 nodes to 49 nodes        Reward_Sum: SAME    time: reduce
+# cards = ['4♦','5♦','6♦','8♦','10♦','8♣','9♣','10♣','11♣','8♥','10♥','8♠','15*'] #0   DONE            3008 nodes to 1297/984 nodes    Reward_Sum: SAME    time: reduce
+# wildcard = '12♠'
+
+# cards = ['7♦','9♦','10♦','11♦','12♦','7♣','7♣','8♥','3♥','7♥','11♥','9♥','6♠'] #13*****   DONE        298 nodes to 210 nodes      Reward_Sum: SAME    time: reduce
+# wildcard = '3♠'
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+4) Attach multiple unused wildcard to one card, for lowest submission
+
+['6♥', '14♥', '8♦', '12♦', '4♥', '13♠', '5♠', '15*', '7♦', '10♦', '5♥', '13♥', '15*', '8♣']
+wildcard = '8♦'
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+5) Minor formatting bug in this case:
+    ['15*', '6♣', '6♦', '5♦', '3♣', '4♦', '4♥', '9♣', '12♠', '13♠', '12♥', '2♥', '14♠', '10♦']
+    wildcard: '6♣'
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+6) Re-evaluate reward_sum after selecting throw card
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+7) MAKE IT SHOWABLE 
+    cards = ['8♠', '8♥', '2♠', '12♥', '8♦', '9♦', '5♠', '8♣', '3♠', '9♥', '13♥', '11♥', '14♠', '5♠']
+    wildcard = '5♣'
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+8) Check this case
+
+    ['14♥', '9♦', '6♠', '12♦', '14♦', '10♠', '14♠', '2♥', '7♥', '14♦', '2♣', '9♠', '5♦', '13♦']
+    wildcard = '9♣'
+
+    Gives 20 but can reduce upto 15
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+9) Bug seen on tree expansion (SEE TOMORROW)
+
+# cards = ['4♥', '11♣', '9♦', '13♣', '7♥', '15*', '6♥', '9♣', '13♦', '13♠', '3♥', '13♥', '2♠', '13♦']
+# wildcard = '2♦'
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+10)  7S, ---, ---, 10S      (fill two wildcards)  handle this case
+
+    ['5♥', '10♠', '15*', '3♦', '2♠', '4♠', '11♠', '6♥', '5♦', '9♣', '10♥', '5♠', '4♣', '12♠']
+    wildcard = '5♣'
+    xxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxx
+
+    ['4♣', '2♣', '14♠', '2♦', '15*', '6♣', '12♠', '2♠', '12♠', '9♥', '8♥', '5♠', '7♥', '8♠']
+    wildcard = '2♣'
+    xxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxx
+
+    ['2♥', '3♦', '7♣', '7♥', '11♥', '9♦', '14♦', '8♠', '15*', '7♥', '2♦', '4♥', '9♠', '7♦']
+    wildcard = '9♥'
+
+    xxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxx
+
+    ['6♦', '7♣', '14♥', '5♦', '10♠', '8♠', '4♦', '7♣', '14♣', '15*', '11♥', '15*', '10♣', '14♠']
+    wildcard =  '7♥'
+    #one wildcard remain- attach to a meld
+    xxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxx
+
+    ['9♠', '11♦', '8♣', '3♠', '14♦', '14♥', '8♥', '8♠', '10♦', '13♥', '4♠', '14♠', '14♥', '10♠']
+    wildcard =  '15*'
+    #one wildcard remain- attach to a meld
+    xxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxx
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+11) Handle this case: wildcard not attached to set
+
+    ['9♣', '13♥', '5♣', '12♣', '4♣', '5♠', '9♣', '11♣', '10♠', '11♠', '7♥', '6♣', '15*', '5♣']
+    wildcard = '11♦'
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+12) ['9♦', '4♠', '2♠', '2♥', '9♠', '10♥', '5♣', '8♣', '10♣', '13♠', '5♥', '14♣', '12♥', '5♠']
+    wildcards = '10♦'
+
+    Expansion not seen
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    
+
+13) Cant expand
+
+['3♠', '3♦', '2♣', '2♦', '5♠', '3♠', '6♥', '6♥', '4♠', '12♣', '14♦', '6♣', '14♠', '6♠']
+wildcard = '10♠'
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  DONE OK TESTED xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   
+
+14) Find Solution to this problem
+
+    cards = ['11♠', '8♠', '8♥', '14♦', '6♥', '11♥', '14♥', '5♣', '14♠', '3♠', '8♦', '4♣', '2♠', '14♣']
+    wildcard = '10♣'
+
+Should throw  11♥ or 11♠ as second life is not complete and it is an incomplete set
+
+15) Find and fill one card in empty data node with 2 wildcards used
+    cards = ['2♣', '10♠', '8♠', '14♥', '4♠', '8♥', '3♦', '4♣', '14♣', '2♣', '9♠', '2♥', '8♣', '14♠']
+    wildcard = '2♦'
+
+    Solution:
+    ['4♠'],['8♣', '8♥', '2♥'],['14♣', '14♥', '14♠'],['2♣', '2♣', '3♦'],['8♠', '9♠', '10♠'],Throw Card:  4♣ 
+    *********** should throw 3♦ instead of 4♣ ***********
+
+16) Check this
+    cards = ['11♦','12♦','10♦','13♦','14♦','11♦','15*','7♠','6♠','4♠','11♥','3♠','11♠'] #0    Gives 10*************** should be 0
+    wildcard = '13♦'  
+    #best logic used for this case gives case below #23 score
+
+    *** while solving above issue also address this case because the two logics fulfilling best meld for each case are mutually exclusive ***
+
+    # cards = ['7♦','9♦','10♦','11♦','12♦','7♣','7♣','8♥','3♥','7♥','11♥','9♥','6♠'] #13
+    # wildcard = '3♠' 
+
+    #best logic used for this case gives case above #10 score
+
+17) Taking very long 
+
+cards = ['14♠', '10♣', '11♠', '12♣', '9♥', '7♦', '11♥', '3♣', '2♣', '12♠', '7♣', '9♣', '5♦', '4♦']
+wildcard = '13♥'
+
+nodes : 1356
+time: 5.03 sec
+
+17) For second life; also include two break houses
+
+cards = ['6♦', '5♦', '6♦', '12♠', '11♥', '14♦', '9♠', '7♠', '3♥', '2♦', '3♦', '15*', '5♠', '13♦']
+wildcard = '7♣'
+
+Not so difficult to implement but number of nodes in trees will increase thus increasing computational complexity
+
+
+cards = ['5♥',	'5♠',	'5♦',	'6♦',	'7♦',	'8♦',	'9♦',	'7♥',	'8♥',	'9♥',	'4♥',	'12♦',	'2♣']
+wildcard = '12♦'
+
+points = 6
+
+
+
+
+
+
+
